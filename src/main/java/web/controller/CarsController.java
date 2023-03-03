@@ -1,6 +1,5 @@
 package web.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,21 +9,15 @@ import web.dao.CarDao;
 @Controller
 public class CarsController {
 
-	@Autowired
-	private CarDao carDao;
+	private final CarDao carDao;
+
+	public CarsController(CarDao carDao) {
+		this.carDao = carDao;
+	}
 
 	@GetMapping(value = "/cars")
-	public String listCars(ModelMap model, @RequestParam(value = "count", required = false) String count) {
-		int countI = -1;
-
-		if (count != null) {
-			try {
-				countI = Integer.parseInt(count);
-			} catch (NumberFormatException e) {
-			}
-		}
-
-		model.addAttribute("messages", carDao.listCars(countI));
+	public String listCars(ModelMap model, @RequestParam(value = "count", required = false) int count) {
+		model.addAttribute("messages", carDao.listCars(count));
 		return "cars";
 	}
 	
